@@ -24,7 +24,23 @@ let auth;
 async function initializeGoogleSheets() {
   try {
     // Create auth client from service account credentials
-    const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY || '{}');
+    let credentials;
+    const credKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY || '{}';
+
+    try {
+      // Try to parse as base64 first (for Render compatibility)
+      const decoded = Buffer.from(credKey, 'base64').toString('utf8');
+      credentials = JSON.parse(decoded);
+      console.log('📝 Using base64-encoded credentials');
+    } catch (base64Error) {
+      // Fall back to regular JSON parsing
+      try {
+        credentials = JSON.parse(credKey);
+        console.log('📝 Using JSON credentials');
+      } catch (jsonError) {
+        throw new Error('Failed to parse credentials: ' + jsonError.message);
+      }
+    }
 
     auth = new google.auth.GoogleAuth({
       credentials: credentials,
