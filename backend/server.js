@@ -424,17 +424,29 @@ app.get('/api/live-stock', async (req, res) => {
   }
 });
 
-// ============ ERROR HANDLERS ============
-app.use((req, res) => {
-  res.status(404).json({ error: 'Endpoint not found' });
+// ============ HEALTH CHECK & ROOT ============
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: '🚀 Inventory Management API',
+    status: 'running',
+    version: '1.0.0',
+    endpoints: {
+      health: 'GET /health',
+      inward: 'POST /push-data',
+      po: {
+        create: 'POST /api/po-entry',
+        list: 'GET /api/po-entries',
+        summary: 'GET /api/po-summary'
+      },
+      reports: {
+        transactions: 'GET /api/transaction-history',
+        liveStock: 'GET /api/live-stock'
+      }
+    },
+    documentation: 'See README.md for full API documentation'
+  });
 });
 
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Internal server error' });
-});
-
-// ============ HEALTH CHECK ============
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'healthy',
@@ -448,6 +460,16 @@ app.get('/health', (req, res) => {
       '/api/live-stock (GET) - Live stock calculation'
     ]
   });
+});
+
+// ============ ERROR HANDLERS (MUST BE LAST) ============
+app.use((req, res) => {
+  res.status(404).json({ error: 'Endpoint not found' });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal server error' });
 });
 
 // ============ SERVER STARTUP ============
