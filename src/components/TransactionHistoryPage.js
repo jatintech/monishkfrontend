@@ -11,7 +11,8 @@ const TransactionHistoryPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get("http://localhost:5000/api/transaction-history");
+        const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+        const response = await axios.get(`${API_URL}/api/transaction-history`);
         setTransactions(response.data || []);
       } catch (error) {
         console.error("Error fetching transactions:", error);

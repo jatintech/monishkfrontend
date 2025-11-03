@@ -11,7 +11,8 @@ const LiveStockPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get("http://localhost:5000/api/live-stock");
+        const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+        const response = await axios.get(`${API_URL}/api/live-stock`);
         setLiveStock(response.data || []); // Fallback to empty array if undefined
       } catch (error) {
         console.error("Error fetching live stock:", error);

@@ -73,7 +73,8 @@ const InwardPage = () => {
   const pushToSheet = async () => {
     if (inwardList.length === 0) return alert('No items to push');
     try {
-      const response = await fetch("http://localhost:5000/push-data", {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${API_URL}/push-data`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(inwardList),

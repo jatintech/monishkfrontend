@@ -74,7 +74,8 @@ const POPage = () => {
     }
 
     try {
-      await axios.post("http://localhost:5000/submit_po", { poList });
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      await axios.post(`${API_URL}/submit_po`, { poList });
       alert("PO submitted successfully!");
       resetForm();
     } catch (error) {
@@ -94,8 +95,9 @@ const POPage = () => {
     }
 
     try {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
       for (const item of poList) {
-        await axios.post("http://localhost:5000/api/po-entry", {
+        await axios.post(`${API_URL}/api/po-entry`, {
           ...item,
           customerName: customerName.trim(),
         });
